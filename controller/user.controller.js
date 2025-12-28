@@ -7,23 +7,25 @@ export const createUser = async (req, res) => {
   const hashedPassword = await bcrypt.hash(password, 10);
   try {
     const user = await User.create({ name, email, password: hashedPassword });
-    const {password, ...userData} = user.toObject();
-    const accessToken = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
+    const { password, ...userData } = user.toObject();
+    const accessToken = jwt.sign(
+      { id: user._id, email: user.email },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "1h",
+      }
+    );
     const refreshToken = jwt.sign(
       { id: user._id, email: user.email },
       process.env.JWT_REFRESH_SECRET,
       { expiresIn: "7d" }
     );
-    return res
-      .status(201)
-      .json({
-        message: "user successfully created",
-        user: userData,
-        accessToken,
-        refreshToken,
-      });
+    return res.status(201).json({
+      message: "user successfully created",
+      user: userData,
+      accessToken,
+      refreshToken,
+    });
   } catch (e) {
     return res.status(400).json({ message: e.message });
   }
@@ -38,19 +40,30 @@ export const loginUser = async (req, res) => {
     }
     const passwordMatch = await bcrypt.compare(password, user.password);
 
-    if(!passwordMatch){
+    if (!passwordMatch) {
       return res.status(401).json({ message: "Invalid password" });
     }
-  
-    const accessToken = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
+
+    const { password:_, ...userData } = user.toObject();
+
+    const accessToken = jwt.sign(
+      { id: user._id, email: user.email },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "1h",
+      }
+    );
     const refreshToken = jwt.sign(
       { id: user._id, email: user.email },
       process.env.JWT_REFRESH_SECRET,
       { expiresIn: "7d" }
     );
-    return res.json({ message: "Login successful", user, accessToken, refreshToken });
+    return res.json({
+      message: "Login successful",
+      user: userData,
+      accessToken,
+      refreshToken,
+    });
   } catch (e) {
     return res.status(500).json({ message: e.message });
   }
