@@ -4,6 +4,12 @@ import jwt from "jsonwebtoken";
 
 export const createUser = async (req, res) => {
   const { name, email, password } = req.body;
+
+  const userExists = await User.findOne({ email });
+  if (userExists) {
+    return res.status(400).json({ message: "Email already in use" });
+  }
+
   const hashedPassword = await bcrypt.hash(password, 10);
   try {
     const user = await User.create({ name, email, password: hashedPassword });
@@ -44,7 +50,7 @@ export const loginUser = async (req, res) => {
       return res.status(401).json({ message: "Invalid password" });
     }
 
-    const { password:_, ...userData } = user.toObject();
+    const { password: _, ...userData } = user.toObject();
 
     const accessToken = jwt.sign(
       { id: user._id, email: user.email },
@@ -68,11 +74,11 @@ export const loginUser = async (req, res) => {
     return res.status(500).json({ message: e.message });
   }
 };
-
+  
 export const getUsers = async (req, res) => {
   try {
     const users = await User.find();
-    return res.json(users);
+    return res.json({ length: users.length, users });
   } catch (e) {
     return res.status(500).json({ message: e.message });
   }

@@ -10,7 +10,7 @@ const validate = (schema) => (req, res, next) => {
 
     next();
   } catch (err) {
-      return res.status(400).json({
+      return res.status(422).json({
         success: false,
         err,
       });
