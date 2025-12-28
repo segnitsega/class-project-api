@@ -14,6 +14,10 @@ const options = {
         url: `http://localhost:${process.env.PORT}`,
         description: "Development server",
       },
+      {
+        url: 'https://capstone-api-dwzu.onrender.com',
+        description: "Production server",
+      }
     ],
     components: {
       securitySchemes: {
