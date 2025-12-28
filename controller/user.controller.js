@@ -13,7 +13,7 @@ export const createUser = async (req, res) => {
   const hashedPassword = await bcrypt.hash(password, 10);
   try {
     const user = await User.create({ name, email, password: hashedPassword });
-    const { password, ...userData } = user.toObject();
+    const { password, refreshToken:_ , ...userData } = user.toObject();
     const accessToken = jwt.sign(
       { id: user._id, email: user.email },
       process.env.JWT_SECRET,
@@ -26,6 +26,7 @@ export const createUser = async (req, res) => {
       process.env.JWT_REFRESH_SECRET,
       { expiresIn: "7d" }
     );
+    await User.findByIdAndUpdate(user._id, { refreshToken });
     return res.status(201).json({
       message: "user successfully created",
       user: userData,
@@ -50,7 +51,7 @@ export const loginUser = async (req, res) => {
       return res.status(401).json({ message: "Invalid password" });
     }
 
-    const { password: _, ...userData } = user.toObject();
+    const { password:_, refreshToken:_rt, ...userData } = user.toObject();
 
     const accessToken = jwt.sign(
       { id: user._id, email: user.email },
@@ -64,6 +65,8 @@ export const loginUser = async (req, res) => {
       process.env.JWT_REFRESH_SECRET,
       { expiresIn: "7d" }
     );
+    await User.findByIdAndUpdate(user._id, { refreshToken });
+
     return res.json({
       message: "Login successful",
       user: userData,
@@ -74,7 +77,7 @@ export const loginUser = async (req, res) => {
     return res.status(500).json({ message: e.message });
   }
 };
-  
+
 export const getUsers = async (req, res) => {
   try {
     const users = await User.find();
