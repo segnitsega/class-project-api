@@ -13,7 +13,7 @@ export const authController = (req, res) => {
 
     const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
 
-    const newAccessToken = jwt.sign({id: decoded.id, email: decoded.email}, process.env.JWT_SECRET, {
+    const newAccessToken = jwt.sign({id: decoded.id, email: decoded.email, role: decoded.role}, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
 

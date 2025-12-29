@@ -15,14 +15,14 @@ export const createUser = async (req, res) => {
     const user = await User.create({ name, email, password: hashedPassword });
     const { password, refreshToken:_ , ...userData } = user.toObject();
     const accessToken = jwt.sign(
-      { id: user._id, email: user.email },
+      { id: user._id, email: user.email, role: user.role },
       process.env.JWT_SECRET,
       {
         expiresIn: "1h",
       }
     );
     const refreshToken = jwt.sign(
-      { id: user._id, email: user.email },
+      { id: user._id, email: user.email, role: user.role },
       process.env.JWT_REFRESH_SECRET,
       { expiresIn: "7d" }
     );
@@ -54,14 +54,14 @@ export const loginUser = async (req, res) => {
     const { password:_, refreshToken:_rt, ...userData } = user.toObject();
 
     const accessToken = jwt.sign(
-      { id: user._id, email: user.email },
+      { id: user._id, email: user.email, role: user.role },
       process.env.JWT_SECRET,
       {
         expiresIn: "1h",
       }
     );
     const refreshToken = jwt.sign(
-      { id: user._id, email: user.email },
+      { id: user._id, email: user.email, role: user.role },
       process.env.JWT_REFRESH_SECRET,
       { expiresIn: "7d" }
     );

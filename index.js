@@ -12,6 +12,8 @@ app.use(express.json());
 
 await connectDB();
 
+// add rate limitting
+
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(specs));
 app.use("/users", userRouter);
 app.use("/refresh-token", authRouter);
