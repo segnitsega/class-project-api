@@ -16,7 +16,7 @@ const validate = (schema) => (req, res, next) => {
       });
   }
 };
-
+  
 export const createUserSchemaValidation = validate(
   z.object({
     body: z.object({
@@ -28,6 +28,7 @@ export const createUserSchemaValidation = validate(
           required_error: "Email is required",
         })
         .email("Not a valid email"),
+      role: z.literal('user'),
       password: z
         .string({
           required_error: "Password is required",
