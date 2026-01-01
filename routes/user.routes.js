@@ -2,6 +2,7 @@ import express from "express";
 import {
   createUserSchemaValidation,
   loginUserSchemaValidation,
+  validateDonationRequest,
 } from "../middleware/user.validation.js";
 
 import {
@@ -9,8 +10,10 @@ import {
   loginUser,
   getUsers,
   getUserById,
+  handleDonationRequest,
 } from "../controller/user.controller.js";
 import { verifyToken } from "../middleware/auth.middleware.js";
+import { upload } from "../middleware/multer.middleware.js";
 
 const router = express.Router();
 
@@ -42,6 +45,9 @@ const router = express.Router();
  *                 type: string
  *                 minLength: 6
  *                 example: "password123"
+ *               role:
+ *                 type: string
+ *                 example: "user"
  *     responses:
  *       201:
  *         description: User Successfully Created
@@ -87,6 +93,78 @@ router.post("/signup", createUserSchemaValidation, createUser);
 router.post("/login", loginUserSchemaValidation, loginUser);
 
 router.use(verifyToken);
+
+/**
+ * @swagger
+ * /users/donate:
+ *   post:
+ *     summary: Create a donation request
+ *     tags:
+ *       - Donations
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - itemName
+ *               - numberOfItems
+ *               - description
+ *               - street
+ *               - city
+ *               - region
+ *               - latitude
+ *               - longitude
+ *             properties:
+ *               itemName:
+ *                 type: string
+ *                 example: "T-Shirts"
+ *               numberOfItems:
+ *                 type: number
+ *                 example: 5
+ *               description:
+ *                 type: string
+ *                 example: "Used clothes in good condition"
+ *               item:
+ *                 type: string
+ *                 format: binary
+ *                 description: Image of the donated item
+ *                 example: "T-Shirts"
+ *               street:
+ *                 type: string
+ *                 example: "Bole Road"
+ *               city:
+ *                 type: string
+ *                 example: "Addis Ababa"
+ *               region:
+ *                 type: string
+ *                 example: "Oromia"
+ *               latitude:
+ *                 type: string
+ *                 example: "9.0192"
+ *               longitude:
+ *                 type: string
+ *                 example: "38.7525"
+ *
+ *     responses:
+ *       201:
+ *         description: Donation request created successfully
+ *       400:
+ *         description: Validation error
+ *       401:
+ *        description: Unauthorized
+ *       500:
+ *         description: Internal server error
+ */
+router.post(
+  "/donate",
+  upload.single("item"),
+  validateDonationRequest,
+  handleDonationRequest
+);
 
 /**
  * @swagger

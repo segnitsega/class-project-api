@@ -7,13 +7,16 @@ const donationRequestSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-
-    title: {
+    itemName: {
       type: String,
       required: true,
       trim: true,
     },
-
+    numberOfItems: {
+      type: Number,
+      required: true,
+      default: 1,
+    },
     description: {
       type: String,
       required: true,
@@ -33,18 +36,18 @@ const donationRequestSchema = new mongoose.Schema(
         type: String,
         required: true,
       },
-      country: {
+      region: {
         type: String,
         required: true,
       },
 
       location: {
         latitude: {
-          type: String,
+          type: Number,
           required: true,
         },
         longitude: {
-          type: String,
+          type: Number,
           required: true,
         },
       },
