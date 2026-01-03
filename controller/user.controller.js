@@ -83,7 +83,12 @@ export const loginUser = async (req, res) => {
 export const getUsers = async (req, res) => {
   try {
     const users = await User.find();
-    return res.json({ length: users.length, users });
+    const usersData = [];
+    users.map((user) => {
+      const { password, refreshToken, ...userData } = user.toObject();
+      usersData.push(userData);
+    });
+    return res.json({ length: usersData.length, users: usersData });
   } catch (e) {
     return res.status(500).json({ message: e.message });
   }
@@ -96,7 +101,8 @@ export const getUserById = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    return res.json(user);
+    const { password, refreshToken, ...userData } = user.toObject();
+    return res.json(userData);
   } catch (e) {
     return res.status(500).json({ message: e.message });
   }

@@ -35,16 +35,16 @@ const ngoShema = new mongoose.Schema(
         type: String,
         required: true,
       },
-      country: {
+      region: {
         type: String,
         required: true,
       },
       latitude: {
-        type: Number,
+        type: String,
         required: true,
       },
       longitude: {
-        type: Number,
+        type: String,
         required: true,
       },
     },
