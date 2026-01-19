@@ -77,11 +77,11 @@ router.post("/signup", createUserSchemaValidation, createUser);
  *             properties:
  *               email:
  *                 type: string
- *                 example: "segni@test.com"
+ *                 example: "segni@gmail.com"
  *               password:
  *                 type: string
  *                 minLength: 6
- *                 example: "password123"
+ *                 example: "123456"
  *     responses:
  *       200:
  *         description: Login successful

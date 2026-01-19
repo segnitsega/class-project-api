@@ -4,7 +4,7 @@ import DonationRequest from "../model/donationRequest.model.js";
 
 export const getDonationRequests = async (req, res) => {
   try {
-    const donationRequests = await DonationRequest.find();
+    const donationRequests = await DonationRequest.find({ status: "pending" });
     if (donationRequests.length === 0)
       return res.status(404).json({ message: "No donation Requests" });
     return res
@@ -35,7 +35,9 @@ export const getOrganizations = async (req, res) => {
     const organizations = await Organization.find();
     if (organizations.length === 0)
       return res.status(404).json({ message: "No organization found" });
-    return res.status(200).json({ organizations });
+    return res
+      .status(200)
+      .json({ length: organizations.length, organizations });
   } catch (e) {
     console.log(`error: ${e.message}`);
     return res.status(500).json({ message: "Internal Server Error" });
@@ -45,11 +47,17 @@ export const getOrganizations = async (req, res) => {
 export const handleDonationApproval = async (req, res) => {
   const { donationReqId, orgId } = req.query;
 
+  if (!donationReqId || !orgId) {
+    return res
+      .status(400)
+      .json({ message: "donationReqId and orgId are required" });
+  }
+
   try {
     const updatedDonationRequest = await DonationRequest.findByIdAndUpdate(
       donationReqId,
       { status: "completed" },
-      { new: true }
+      { new: true },
     );
     if (!updatedDonationRequest)
       return res.status(500).json("Donation Request not approved");
@@ -62,6 +70,7 @@ export const handleDonationApproval = async (req, res) => {
       .status(200)
       .json({ message: "Donation Request Approved", updatedDonationRequest });
   } catch (e) {
+    console.log(e)
     return res.status(500).json("Internal Server Error");
   }
 };
@@ -86,7 +95,7 @@ export const handleNgoRegistration = async (req, res) => {
   } = req.body;
 
   try {
-    const newOrganization = Organization.create({
+    const newOrganization = await Organization.create({
       organization_name,
       license_number,
       registrationNumber,
