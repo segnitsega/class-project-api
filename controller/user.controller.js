@@ -112,6 +112,7 @@ export const handleDonationRequest = async (req, res) => {
   try {
     const {
       itemName,
+      itemType,
       numberOfItems,
       description,
       street,
@@ -150,6 +151,7 @@ export const handleDonationRequest = async (req, res) => {
     const savedRequest = await DonationRequest.create({
       userId,
       itemName,
+      itemType,
       numberOfItems,
       description,
       imageUrl: profilePictureUrl,

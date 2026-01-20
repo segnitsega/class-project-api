@@ -111,6 +111,7 @@ router.use(verifyToken);
  *             type: object
  *             required:
  *               - itemName
+ *               - itemType
  *               - numberOfItems
  *               - description
  *               - street
@@ -122,6 +123,9 @@ router.use(verifyToken);
  *               itemName:
  *                 type: string
  *                 example: "T-Shirts"
+ *               itemType:
+ *                 type: string
+ *                 example: "Clothes"
  *               numberOfItems:
  *                 type: number
  *                 example: 5

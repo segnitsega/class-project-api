@@ -45,6 +45,9 @@ export const validateDonationRequest = validate(
       itemName: z.string({
         required_error: "Name is required",
       }),
+      itemType: z.string({
+        required_error: "Item type is required",
+      }),
       numberOfItems: z.coerce.number({
         required_error: "Number of items is required",
         default: 1,
