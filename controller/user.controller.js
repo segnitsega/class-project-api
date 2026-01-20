@@ -162,6 +162,7 @@ export const handleDonationRequest = async (req, res) => {
       donationRequest: savedRequest,
     });
   } catch (e) {
+    console.log("Error: ", e)
     return res.status(500).json({ message: e.message });
   }
 };

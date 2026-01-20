@@ -5,10 +5,12 @@ import { router as userRouter } from "./routes/user.routes.js";
 import { swaggerUi, specs } from "./config/swagger.js";
 import { router as authRouter } from "./routes/auth.route.js";
 import {router as adminRouter} from "./routes/admin.route.js"
+import cors from "cors";
 
 const app = express();
 const PORT = process.env.PORT;
 
+app.use(cors());
 app.use(express.json());
 
 await connectDB();
